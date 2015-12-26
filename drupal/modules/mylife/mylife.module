@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * @file
+ * Enables multi-user mylifes.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function mylife_menu() {
+  $items['mylife'] = array(
+    'title' => 'My Life',
+    'page callback' => 'mylife_page_default',
+    'access arguments' => array('access content'),
+    'type' => MENU_SUGGESTED_ITEM,
+    'file' => 'mylife.pages.inc',
+  );
+  $items['mylife/%user_uid_optional'] = array(
+    'title' => 'My mylife',
+    'page callback' => 'mylife_page_user',
+    'page arguments' => array(1),
+    'access callback' => 'mylife_page_user_access',
+    'access arguments' => array(1),
+    'file' => 'mylife.pages.inc',
+  );
+  return $items;
+}
+
+/**
+ * Access callback for user mylife pages.
+ */
+function mylife_page_user_access($account) {
+  // The visitor must be able to access the site's content.
+  // For a mylife to 'exist' the user must either be able to
+  // create new mylife entries, or it must have existing posts.
+  return $account->uid && user_access('access content') && (user_access('create mylife content', $account) || _mylife_post_exists($account));
+}
+

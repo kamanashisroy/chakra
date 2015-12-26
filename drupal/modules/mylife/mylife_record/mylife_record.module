@@ -1,0 +1,147 @@
+<?php
+
+/**
+ * @file
+ * Enables multi-user mylife_records.
+ */
+
+/**
+ * Implements hook_node_info().
+ */
+/*function mylife_record_node_info() {
+  return array(
+    'mylife_record' => array(
+      'name' => t('My Life record'),
+      'base' => 'mylife_record',
+      'description' => t('It contains the user activity entries. Each entry has activity type, start-time and duration. '),
+    )
+  );
+}*/
+
+/**
+ * Implements hook_help().
+ */
+function mylife_record_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#mylife_record':
+      $output = '<h3>' . t('About') . '</h3>';
+      $output .= t('<p> Please see the database table. The web view is not implemented at this point of time. (TODO update me when the web is available)</p>');
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_form().
+ */
+function mylife_record_add_form($context, $account) {
+	global $user;
+	$form['activity_type'] = array(
+		'#type' => 'select',
+		'#title' => t('Activity'),
+		'#default_value' => 1,
+		'#options' => array(
+			1 => 'Sleep',
+			2 => 'TM',
+		),
+		'#required' => TRUE,
+		'#description' => t('Select the type of activity.'),
+	);
+
+	$form['start_time'] = array(
+		'#type' => 'date_select',
+		'#title' => t('Starts(Date-time)'),
+		'#date_format' => 'M d Y H:i:s',
+		'#default_value' => date(NULL),
+	);
+	$form['duration'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Duration(minutes)'),
+		'#maxlength' => 8,
+	);
+	$account_id = $user->uid;
+	if(isset($account) && isset($account->uid)) {
+		$account_id = $account->uid;
+	}
+	$form['account_id'] = array(
+		'#type' => 'hidden',
+		'#value' => $account_id,
+	);
+	$form['submit'] = array( '#type' => 'submit', '#value' => "Save" );
+
+	return $form;
+}
+
+
+/**
+ * Validates settings form for mylife_record_form().
+ *
+ * Verifies that user exists before continuing.
+ */
+/*function mylife_record_add_form_validate($form, $form_state) {
+	// TODO fill me
+}*/
+
+/**
+ * Submit handler for mylife_record_form.
+ *
+ * Returns an associative array of values which will be available in the
+ * $context when an action is executed.
+ */
+function mylife_record_add_form_submit($form, $form_state) {
+	db_insert('mylife_record')
+		->fields(
+			array(
+				'uid' => $form_state['values']['account_id']
+				,'activity_type' => $form_state['values']['activity_type']
+				,'start_time' => $form_state['values']['start_time']
+				,'duration' => $form_state['values']['duration']
+			)
+		)->execute();
+}
+
+
+
+
+/**
+ * Implements hook_menu().
+ */
+function mylife_record_menu() {
+  $items['mylife_record'] = array(
+    'title' => 'Activities',
+    'page callback' => 'mylife_record_page_default',
+    'access arguments' => array('access content'),
+    'type' => MENU_SUGGESTED_ITEM,
+    'file' => 'mylife_record.pages.inc',
+  );
+  $items['mylife_record/add/%user_uid_optional'] = array(
+    'title' => 'My mylife_record',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mylife_record_add_form', 2),
+    'access callback' => 'mylife_record_page_user_access',
+    'access arguments' => array(2),
+    'file' => 'mylife_record.pages.inc',
+  );
+
+  $items['mylife_record/%user_uid_optional'] = array(
+    'title' => 'My mylife_record',
+    'page callback' => 'mylife_record_page_user',
+    'page arguments' => array(1),
+    'access callback' => 'mylife_record_page_user_access',
+    'access arguments' => array(1),
+    'file' => 'mylife_record.pages.inc',
+  );
+
+
+  return $items;
+}
+
+/**
+ * Access callback for user mylife_record pages.
+ */
+function mylife_record_page_user_access($account) {
+  // The visitor must be able to access the site's content.
+  // For a mylife_record to 'exist' the user must either be able to
+  // create new mylife_record entries, or it must have existing posts.
+  return $account->uid && user_access('access content') && (user_access('create mylife_record content', $account) || _mylife_record_post_exists($account));
+}
+
