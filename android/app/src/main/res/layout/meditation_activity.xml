@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/ClosingEyes"
+        android:id="@+id/MeditationClosingEyes"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="86dp"
+        android:onClick="onMeditationClosingEyes" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/OpeningEyes"
+        android:id="@+id/MeditationOpeningEyes"
+        android:layout_below="@id/MeditationClosingEyes"
+        android:layout_centerHorizontal="true"
+        android:onClick="onMeditationOpeningEyes" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/Home"
+        android:id="@+id/home"
+        android:layout_below="@id/MeditationOpeningEyes"
+        android:layout_centerHorizontal="true"
+        android:onClick="goHome" />
+</RelativeLayout>

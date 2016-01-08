@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">hackathon</string>
+    <string name="action_settings">Settings</string>
+    <string name="Sleep">Sleep</string>
+    <string name="Home">Home</string>
+    <string name="SleepingNow">Sleeping Now</string>
+    <string name="JustWokeUp">Just Woke Up</string>
+    <string name="Meditation">Meditation</string>
+    <string name="OpeningEyes">Opening Eyes</string>
+    <string name="ClosingEyes">Closing Eyes</string>
+    <string name="Sync">Sync</string>
+    <string name="SyncingSuccessful">Syncing Successful</string>
+    <string name="SyncingFailed">Syncing Failed Retry</string>
+    <string name="SigningIn">Signing In</string>
+    <string name="Syncing">Syncing</string>
+
+</resources>

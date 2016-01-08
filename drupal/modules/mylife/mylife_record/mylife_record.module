@@ -131,6 +131,16 @@ function mylife_record_menu() {
     'file' => 'mylife_record.pages.inc',
   );
 
+  $items['mylife_record/json/getuid'] = array(
+    'title' => 'JSON response, it outputs user id',
+    'page callback' => 'mylife_record_json_uid',
+    'page arguments' => array(1),
+    'access callback' => 'mylife_record_page_user_access',
+    'access arguments' => array(1),
+    'file' => 'mylife_record.pages.inc',
+  );
+
+
 
   return $items;
 }
@@ -138,10 +148,62 @@ function mylife_record_menu() {
 /**
  * Access callback for user mylife_record pages.
  */
-function mylife_record_page_user_access($account) {
+function mylife_record_page_user_access($account = null) {
+	global $user;
+	if($account == null) {
+		$account = $user;
+	}
   // The visitor must be able to access the site's content.
   // For a mylife_record to 'exist' the user must either be able to
   // create new mylife_record entries, or it must have existing posts.
   return $account->uid && user_access('access content') && (user_access('create mylife_record content', $account) || _mylife_record_post_exists($account));
 }
+
+function mylife_record_services_resources() {
+	$mylife_resource = array(
+	    'mylife_record' => array(
+	      'operations' => array(
+		'sync' => array(
+		  'file' => array(
+		    'type' => 'inc',
+		    'module' => 'mylife_record',
+		    'name' => 'mylife_services',
+		  ), 
+		  'callback' => 'mylife_record_sync', 
+		  'args' => array(
+		    array(
+		      'name' => 'data', 
+		      'type' => 'struct', 
+		      'optional' => FALSE, 
+		      'source' => 'data', 
+		      'description' => 'sync mobile data',
+		    ),
+		  ), 
+		  'access callback' => 'mylife_record_page_user_access', 
+		), 
+		/*'progress' => array(
+		  'file' => array(
+		    'type' => 'inc',
+		    'module' => 'services',
+		    'name' => 'resources/node_resource',
+		  ), 
+		  'callback' => '_node_resource_create', 
+		  'args' => array(
+		    array(
+		      'name' => 'node', 
+		      'optional' => FALSE, 
+		      'source' => 'data', 
+		      'description' => 'The node data to create', 
+		      'type' => 'array',
+		    ),
+		  ), 
+		  'access callback' => '_node_resource_access', 
+		  'access arguments' => array('create'), 
+		  'access arguments append' => TRUE,
+		)*/
+	      )
+	);
+	return mylife_resource;
+}
+
 

@@ -1,0 +1,64 @@
+<?php
+
+/**
+ * @file
+ * Enables multi-user mylifes.
+ */
+
+/**
+ * Implements hook_block_info().
+ */
+function siteblocks_block_info() {
+	$blocks['mylife_left'] = array(
+		'info' => t('Mylife left link'),
+		//'region' => 'homepage_top_first_block',
+		'cache' => DRUPAL_NO_CACHE,
+	);
+	$blocks['mylife_middle'] = array(
+		'info' => t('Mylife middle link'),
+		//'region' => 'homepage_top_second_block',
+		'cache' => DRUPAL_NO_CACHE,
+	);
+	$blocks['mylife_right'] = array(
+		'info' => t('Mylife right link'),
+		//'region' => 'homepage_top_third_block',
+		'cache' => DRUPAL_NO_CACHE,
+	);
+	return $blocks;
+}
+
+function siteblocks_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+    case 'mylife_left':
+      $block['subject'] = t('Mylife left link');
+      $block['content'] = array(
+        '#theme' => 'feed_icon',
+        '#url' => 'mylife_record/add',
+        '#title' => t('Update activity'),
+      );
+      break;
+
+    case 'mylife_middle':
+      $block['subject'] = t('Mylife middle link');
+      $block['content'] = array(
+        '#theme' => 'feed_icon',
+        '#url' => 'mylife_record/add',
+        '#title' => t('Update activity'),
+      );
+      break;
+
+    case 'mylife_right':
+      $block['subject'] = t('Mylife right link');
+      $block['content'] = array(
+        '#theme' => 'feed_icon',
+        '#url' => 'mylife_record/add',
+        '#title' => t('Update activity'),
+      );
+      break;
+  }
+  return $block;
+}
+
+
